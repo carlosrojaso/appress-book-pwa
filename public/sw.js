@@ -1,5 +1,5 @@
 
-const currentCache = 'cache-v1.1';
+const currentCache = 'cache-v1.0.0';
 
 const files = [
     "favicon.ico",
@@ -20,16 +20,6 @@ const files = [
       caches.open(currentCache).then(cache => {
         return cache.addAll(files);
       })
-    );
-  });
-  
-  self.addEventListener('activate', event => {
-    event.waitUntil(
-      caches.keys().then(cacheNames => Promise.all(
-        cacheNames.filter(cacheName => {
-          return cacheName !== currentCache
-        }).map(cacheName => caches.delete(cacheName))
-      ))
     );
   });
   
