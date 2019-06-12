@@ -22,4 +22,21 @@ const files = [
       })
     );
   });
-  
+
+  self.addEventListener('activate', event => {
+    let version = 'v1.0.0';
+    event.waitUntil(
+      caches.keys()
+        .then(
+          cacheNames => {
+            Promise.all(
+              cacheNames
+                .map(c => c.split('-'))
+                .filter(c => c[0] === 'cache')
+                .filter(c => c[1] !== version)
+                .map(c => caches.delete(c.join('-')))
+            )
+          }
+        )
+    );
+  });
