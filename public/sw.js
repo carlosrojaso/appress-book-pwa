@@ -41,6 +41,19 @@ const files = [
     );
   });
 
-  self.addEventListener('fetch', event => {
-    event.respondWith(caches.match(event.request));
+  self.addEventListener('fetch', (event) => {
+    event.respondWith(
+      caches.open(currentCache)
+      .then(function(cache) {
+        return cache.match(event.request)
+        .then(function(response) {
+          var fetchPromise = fetch(event.request)
+          .then(function(networkResponse) {
+            cache.put(event.request, networkResponse.clone());
+            return networkResponse;
+          })
+          return response || fetchPromise;
+        })
+      })
+    );
   });
