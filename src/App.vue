@@ -31,10 +31,9 @@ export default {
   methods:  {
     newNote () {
       this.pages.push({
-        title: '',
-        content: ''
+        title: 'Title',
+        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus et elit id purus accumsan lacinia. Suspendisse nulla urna, facilisis ac tincidunt in, accumsan sit amet enim. Donec a ante dolor'
       });
-      console.log(this.pages);
     },
     saveNote () {
 
