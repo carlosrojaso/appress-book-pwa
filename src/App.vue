@@ -13,6 +13,31 @@
     <v-content>
       <Notes :pages="pages" @new-note="newNote"/>
     </v-content>
+    <v-dialog v-model="dialog">
+    <v-card>
+      <v-card-title>
+        <span class="headline">New Note</span>
+      </v-card-title>
+      <v-card-text>
+        <v-container grid-list-md>
+          <v-layout wrap>
+            <v-flex xs12 sm12 md12>
+              <v-text-field v-model="newTitle" value="" label="Title*" required></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm12 md12>
+              <v-textarea v-model="newContent" value="" label="Content"></v-textarea>
+            </v-flex>
+          </v-layout>
+        </v-container>
+        <small>*indicates required field</small>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="blue darken-1" flat @click="closeModal()">Close</v-btn>
+        <v-btn color="blue darken-1" flat @click="saveNote()">Save</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
   </v-app>
 </template>
 
@@ -26,20 +51,32 @@ export default {
   },
   data: () => ({
     pages:[],
-    index:0
+    newTitle: '',
+    newContent: '',
+    index:0,
+    dialog: false
   }),
   methods:  {
     newNote () {
-      this.pages.push({
-        title: 'Title',
-        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus et elit id purus accumsan lacinia. Suspendisse nulla urna, facilisis ac tincidunt in, accumsan sit amet enim. Donec a ante dolor'
-      });
+      this.dialog = true;
     },
     saveNote () {
-
+      this.pages.push({
+        title: this.newTitle,
+        content: this.newContent
+      });
+      this.resetForm();
+      this.closeModal();
+    },
+    closeModal () {
+      this.dialog = false;
     },
     deleteNote () {
 
+    },
+    resetForm () {
+      this.newTitle = '';
+      this.newContent = '';
     }
   }
 }
@@ -50,8 +87,6 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>

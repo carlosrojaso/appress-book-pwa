@@ -3,12 +3,19 @@
     <v-card v-for="(page, index) in pages" :key="index">  
       <v-card-title primary-title>
         <div>
-          <h3 class="headline mb-0">{{page.title}} tit + {{index}}</h3>
-          <div> {{page.content}} tit </div>
+          <h3 class="headline mb-0">{{page.title}}</h3>
+          <div>{{page.content}}</div>
         </div>
       </v-card-title>
     </v-card>
-    <v-btn fab dark color="indigo" @click="newNote()">
+    <v-btn 
+      fab
+      dark
+      absolute
+      right
+      color="indigo"
+      class="floatButton"
+      @click="newNote()">
       <v-icon dark>add</v-icon>
     </v-btn>
   </div>
@@ -20,7 +27,7 @@ export default {
   props: ['pages'],
   methods: {
     newNote () {
-    this.$emit('new-note')
+    this.$emit('new-note');
     }
   }
 }
@@ -28,7 +35,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-a {
-  color: #42b983;
+.floatButton {
+  margin: 10px;
 }
 </style>
