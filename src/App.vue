@@ -11,7 +11,7 @@
     </v-toolbar>
 
     <v-content>
-      <Notes :pages="pages" @new-note="newNote"/>
+      <Notes :pages="pages" @new-note="newNote" @delete-note="deleteNote"/>
     </v-content>
     <v-dialog v-model="dialog">
     <v-card>
@@ -53,7 +53,7 @@ export default {
     pages:[],
     newTitle: '',
     newContent: '',
-    index:0,
+    index: 0,
     dialog: false
   }),
   methods:  {
@@ -65,14 +65,16 @@ export default {
         title: this.newTitle,
         content: this.newContent
       });
+      this.index = this.pages.length - 1;
       this.resetForm();
       this.closeModal();
     },
     closeModal () {
       this.dialog = false;
     },
-    deleteNote () {
-
+    deleteNote (item) {
+      this.pages.splice( item, 1);
+      this.index = Math.max(this.index - 1, 0);
     },
     resetForm () {
       this.newTitle = '';

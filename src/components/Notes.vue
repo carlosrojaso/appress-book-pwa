@@ -7,6 +7,12 @@
           <div>{{page.content}}</div>
         </div>
       </v-card-title>
+      <v-card-actions>
+            <v-btn 
+            flat
+            @click="deleteNote(index)"
+            color="orange">Delete</v-btn>
+      </v-card-actions>
     </v-card>
     <v-btn 
       fab
@@ -28,6 +34,9 @@ export default {
   methods: {
     newNote () {
     this.$emit('new-note');
+    },
+    deleteNote (item) {
+    this.$emit('delete-note', item++);
     }
   }
 }
