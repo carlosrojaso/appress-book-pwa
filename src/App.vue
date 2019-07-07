@@ -1,27 +1,47 @@
 <template>
   <v-app>
     <v-toolbar app>
-        <v-icon>arrow_back</v-icon>
       <v-toolbar-title >
         <span>VueNoteApp</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-toolbar-items>
+        <v-btn flat>About</v-btn>
+      </v-toolbar-items>
     </v-toolbar>
 
     <v-content>
-      <img alt="Vue logo" src="./assets/logo.png">
-      <HelloWorld msg="Welcome to Your Vue.js App"/>
+      <Notes :pages="pages" @new-note="newNote"/>
     </v-content>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Notes from './components/Notes.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    Notes
+  },
+  data: () => ({
+    pages:[],
+    index:0
+  }),
+  methods:  {
+    newNote () {
+      this.pages.push({
+        title: '',
+        content: ''
+      });
+      console.log(this.pages);
+    },
+    saveNote () {
+
+    },
+    deleteNote () {
+
+    }
   }
 }
 </script>
