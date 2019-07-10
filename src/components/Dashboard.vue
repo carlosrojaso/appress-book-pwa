@@ -32,7 +32,11 @@
 </template>
 
 <script>
+import {fireApp} from'../firebase.js'
 import Notes from './Notes.vue'
+
+const db = fireApp.database().ref();
+
 export default {
   name: 'Dashboard',
   components: {
@@ -45,16 +49,29 @@ export default {
     index: 0,
     dialog: false
   }),
+  mounted() {
+    db.once('value', (notes) => {
+      notes.forEach((note) => {
+        this.pages.push({
+          title: note.child('title').val(),
+          content: note.child('content').val(),
+          ref: note.ref
+        })
+      })
+    })
+  },
   methods:  {
     newNote () {
       this.dialog = true;
     },
     saveNote () {
-      this.pages.push({
+      const newItem = {
         title: this.newTitle,
         content: this.newContent
-      });
+      };
+      this.pages.push(newItem);
       this.index = this.pages.length - 1;
+      db.push(newItem);
       this.resetForm();
       this.closeModal();
     },
@@ -62,6 +79,8 @@ export default {
       this.dialog = false;
     },
     deleteNote (item) {
+      let noteRef = this.pages[item].ref;
+      if(noteRef) { noteRef.remove(); }
       this.pages.splice( item, 1);
       this.index = Math.max(this.index - 1, 0);
     },
