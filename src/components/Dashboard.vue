@@ -32,10 +32,8 @@
 </template>
 
 <script>
-import {fireApp} from'../firebase.js'
+import {indDB} from '../indexedDB.js'
 import Notes from './Notes.vue'
-
-const db = fireApp.database().ref();
 
 export default {
   name: 'Dashboard',
@@ -50,15 +48,10 @@ export default {
     dialog: false
   }),
   mounted() {
-    db.once('value', (notes) => {
-      notes.forEach((note) => {
-        this.pages.push({
-          title: note.child('title').val(),
-          content: note.child('content').val(),
-          ref: note.ref
-        })
-      })
-    })
+    indDB.open().catch(function (e) {
+      console.log("Something happened opening indexed DB: " + e.stack);
+    });
+    this.getAllRows();
   },
   methods:  {
     newNote () {
@@ -71,18 +64,34 @@ export default {
       };
       this.pages.push(newItem);
       this.index = this.pages.length - 1;
-      db.push(newItem);
+
+      indDB.transaction('rw',indDB.notes,() => 
+      {
+        indDB.notes.add(newItem);
+      });
+
       this.resetForm();
       this.closeModal();
     },
     closeModal () {
       this.dialog = false;
     },
+    getAllRows () {
+      indDB.notes.each(note => {this.pages.push(note);});
+    },
     deleteNote (item) {
-      let noteRef = this.pages[item].ref;
-      if(noteRef) { noteRef.remove(); }
+      this.deleteRow(this.pages[item]);
       this.pages.splice( item, 1);
       this.index = Math.max(this.index - 1, 0);
+    },
+    deleteRow (item){
+      const criteria = {'title': item.title};
+      // get primaryKey
+      indDB.notes.where(criteria).first(
+        (result) => {
+          indDB.notes.delete(result.id);
+        }
+      );
     },
     resetForm () {
       this.newTitle = '';
