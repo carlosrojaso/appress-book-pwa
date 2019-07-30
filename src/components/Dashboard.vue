@@ -65,6 +65,15 @@ export default {
       this.dialog = true;
     },
     saveNote () {
+      if( 'serviceWorker' in navigator && 'SyncManager' in window ){
+        navigator
+        .serviceWorker
+        .ready
+        .then(function(registration){
+          registration.sync.register("new-item");
+        });
+      }
+
       const newItem = {
         title: this.newTitle,
         content: this.newContent
