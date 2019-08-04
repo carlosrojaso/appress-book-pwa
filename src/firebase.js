@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/database';
+import 'firebase/messaging';
 
 let config = {
   apiKey: "AIzaSyDT2_jZiasDK017UicoakK1gn93FIZnJ5o",

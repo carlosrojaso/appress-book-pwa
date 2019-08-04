@@ -1,6 +1,13 @@
 <template>
   <div class="dashboard">
     <v-content>
+      <v-alert
+        v-model="showAlert"
+        type="info"
+        dismissible
+      >
+        {{alertContent}}
+      </v-alert>
       <Notes :pages="pages" @new-note="newNote" @delete-note="deleteNote"/>
     </v-content>
     <v-dialog v-model="dialog">
@@ -36,6 +43,8 @@ import {fireApp} from'../firebase.js'
 import Notes from './Notes.vue'
 
 const db = fireApp.database().ref();
+const messaging = fireApp.messaging();
+messaging.usePublicVapidKey("BPqt_L3yi5MUsTJGGGKx-NB4ALPcefPZoAUlcKFxATfpYLlePB5YzMNVdwu10aMLbdwRcJYgTSPzOynlfa4tTAA");
 
 export default {
   name: 'Dashboard',
@@ -47,8 +56,13 @@ export default {
     newTitle: '',
     newContent: '',
     index: 0,
-    dialog: false
+    dialog: false,
+    showAlert: false,
+    alertContent: 'demo'
   }),
+  created() {
+    this.refreshingToken();
+  },
   mounted() {
     db.once('value', (notes) => {
       notes.forEach((note) => {
@@ -58,7 +72,9 @@ export default {
           ref: note.ref
         })
       })
-    })
+    });
+
+    this.retrieveMessaging();
   },
   methods:  {
     newNote () {
@@ -84,9 +100,50 @@ export default {
       this.pages.splice( item, 1);
       this.index = Math.max(this.index - 1, 0);
     },
+    refreshingToken() {
+      messaging.onTokenRefresh(() => {
+        messaging.getToken().then((refreshedToken) => {
+          console.log('Token refreshed.', refreshedToken);
+        }).catch((err) => {
+          console.log('Unable to retrieve refreshed token ', err);
+          showToken('Unable to retrieve refreshed token ', err);
+        });
+      });
+    },
     resetForm () {
       this.newTitle = '';
       this.newContent = '';
+    },
+    retrieveMessaging () {
+      // Retrieve Firebase Messaging object.
+      messaging.requestPermission()
+      .then(() => {
+        console.log('Notification permission granted.');
+
+      messaging.getToken()
+      .then((currentToken) => {
+        if (currentToken) {
+          console.log("token:" + currentToken );
+        } else {
+          // Show permission request.
+          console.log('No Instance ID token available. Request permission to generate one.');
+        }
+      })
+      .catch((err) => {
+        console.log('An error occurred while retrieving token. ', err);
+      });
+
+      //recibiendo mensaje en primer plano.
+      messaging.onMessage((payload) => {
+          console.log("Message received. ", payload);
+          this.showAlert = true;
+          this.alertContent = payload.notification.body;
+        });
+      })
+      .catch(function(err) {
+        console.log('Unable to get permission to notify.', err);
+      });
+
     }
   }
 }

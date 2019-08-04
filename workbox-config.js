@@ -3,5 +3,5 @@ module.exports = {
   "globPatterns": [
     "**/*.{ico,png,html,json}"
   ],
-  "swDest": "public/service-worker.js"
+  "swDest": "public/firebase-messaging-sw.js"
 };
