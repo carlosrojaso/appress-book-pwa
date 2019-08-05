@@ -13,5 +13,3 @@ let config = {
 };
 
 export const fireApp = firebase.initializeApp(config);
-
-//export const db = app.database();
