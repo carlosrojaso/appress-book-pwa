@@ -2,9 +2,7 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
+      email: {{ email }}
     </p>
     <h3>Installed CLI Plugins</h3>
     <ul>
@@ -33,8 +31,26 @@
 <script>
 export default {
   name: 'HelloWorld',
+  created: function () {
+    console.log('Component created.');
+  },
+  mounted: function() {
+    fetch('https://randomuser.me/api/?results=1')
+    .then(
+      (response) => {
+        return response.json();
+      }
+    )
+    .then(
+      (reponseObject) => {
+        this.email = reponseObject.results[0].email;
+      } 
+    );
+    console.log('Component is mounted.');
+  },
   props: {
-    msg: String
+    msg: String,
+    email:String
   }
 }
 </script>
