@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>IndexedDB</title>
+</head>
+<body>
+    <script>
+    (function() {
+    var db;
+    var connection;
+
+    connection = window.indexedDB.open("notes", 1);
+    console.log('connection: ', connection);
+
+    connection.onupgradeneeded = (upgradeDb) => {
+        var db = upgradeDb.target.result;
+        if (!db.objectStoreNames.contains('notes')) {
+            db.createObjectStore('notes', {keyPath: 'title'});
+        }
+    };
+    
+    connection.onsuccess = (event) => {
+    // data
+    let dummyData = [
+    {
+    "title": "title 1",
+    "content": "PWA"
+    },
+    {
+    "title": "title 2",
+    "content": "Loren Ipsum"
+    }
+    ];
+
+    // Opening successful process. 
+    db = event.target.result;
+    console.log('success:', db);
+
+    writingObjectStore(dummyData);
+    readingObjectStore();
+    };
+
+    connection.onerror = (event) => {
+    // We handle the opening db error. 
+    console.error('error:', event.target.errorCode);
+    };
+
+    function writingObjectStore(dummyData) {
+
+        console.log('writingObjectStore:', db);
+        // it can be readonly or readwrite
+        var transaction = db.transaction(['notes'], 'readwrite');
+
+        // Adding the data in the objectStore
+        let objectStore = transaction.objectStore("notes");
+        dummyData.forEach(
+            (note) => {
+            let request = objectStore.add(note);
+
+            request.onerror = function(e) {
+                console.log('Error', e.target.error.name);
+            };
+            request.onsuccess = function(e) {
+                console.log('Woot! Did it');
+            };
+            }
+        );
+    }
+
+    function readingObjectStore() {
+        let transaction = db.transaction(["notes"], "readonly");
+        // Adding the data in the objectStore 
+        let objectStore = transaction.objectStore('notes') ;
+        let request = objectStore.getAll();
+        request.onsuccess = () => {
+            request.result.forEach((item)=> console.log('Items by name:', item));
+            };
+    }
+
+    function deletingFromTheObjectStore() {
+        // Deleting a registry 
+        let request = db.transaction(["notes"], "readwrite")
+                        .objectStore("notes")
+                        .delete("title 1");
+        request.onsuccess = (event) => {
+            // it was successfully deleted.
+            console.log('registry deleted');
+        };
+    }
+   
+    })();
+    </script>
+</body>
+</html>
