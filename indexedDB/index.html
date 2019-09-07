@@ -7,13 +7,14 @@
     <title>IndexedDB</title>
 </head>
 <body>
+    <h1>IndexedDB Demo</h1>
+    <p>Open Chrome Dev Tools - Application - IndexedDB</p>
     <script>
     (function() {
     var db;
     var connection;
 
     connection = window.indexedDB.open("notes", 1);
-    console.log('connection: ', connection);
 
     connection.onupgradeneeded = (upgradeDb) => {
         var db = upgradeDb.target.result;
@@ -37,7 +38,6 @@
 
     // Opening successful process. 
     db = event.target.result;
-    console.log('success:', db);
 
     writingObjectStore(dummyData);
     readingObjectStore();
@@ -49,8 +49,6 @@
     };
 
     function writingObjectStore(dummyData) {
-
-        console.log('writingObjectStore:', db);
         // it can be readonly or readwrite
         var transaction = db.transaction(['notes'], 'readwrite');
 
@@ -60,11 +58,10 @@
             (note) => {
             let request = objectStore.add(note);
 
-            request.onerror = function(e) {
-                console.log('Error', e.target.error.name);
+            request.onerror = (e) => {
             };
-            request.onsuccess = function(e) {
-                console.log('Woot! Did it');
+            request.onsuccess = (e) => {
+                console.log('Item added to indexedDB');
             };
             }
         );
@@ -76,7 +73,7 @@
         let objectStore = transaction.objectStore('notes') ;
         let request = objectStore.getAll();
         request.onsuccess = () => {
-            request.result.forEach((item)=> console.log('Items by name:', item));
+            request.result.forEach((item) => console.log('Items by name:', item));
             };
     }
 
