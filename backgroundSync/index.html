@@ -4,11 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>IndexedDB</title>
+    <title>Background Sync</title>
 </head>
 <body>
-    <h1>IndexedDB Demo</h1>
-    <p>Open Chrome Dev Tools - Application - IndexedDB</p>
+    <h1>Background Sync Demo</h1>
+    <p>Open Chrome Dev Tools</p>
+    <script>
+    if ('serviceWorker' in navigator) {
+    // Register a service worker hosted at the root of the
+    // site using a more restrictive scope.
+    navigator.serviceWorker.register('/sw.js', {scope: './'}).then(
+        (registration) => {
+            console.log('Service worker registration succeeded:', registration);
+        },
+        (error) => {
+        console.log('Service worker registration failed:', error);
+        }
+    );
+
+    navigator.serviceWorker.ready.then(
+        (registration) => {
+            registration.sync.register('send-message');
+        }
+    );
+    }    else {
+    console.log('Service workers are not supported.');
+    }
+    </script>
     <script>
     (function() {
     var db;
