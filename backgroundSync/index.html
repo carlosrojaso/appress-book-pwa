@@ -21,96 +21,10 @@
         console.log('Service worker registration failed:', error);
         }
     );
-
-    navigator.serviceWorker.ready.then(
-        (registration) => {
-            registration.sync.register('send-message');
-        }
-    );
-    }    else {
-    console.log('Service workers are not supported.');
+    } else {
+        console.log('Service workers are not supported.');
     }
     </script>
-    <script>
-    (function() {
-    var db;
-    var connection;
-
-    connection = window.indexedDB.open("notes", 1);
-
-    connection.onupgradeneeded = (upgradeDb) => {
-        var db = upgradeDb.target.result;
-        if (!db.objectStoreNames.contains('notes')) {
-            db.createObjectStore('notes', {keyPath: 'title'});
-        }
-    };
-    
-    connection.onsuccess = (event) => {
-    // data
-    let dummyData = [
-    {
-    "title": "title 1",
-    "content": "PWA"
-    },
-    {
-    "title": "title 2",
-    "content": "Loren Ipsum"
-    }
-    ];
-
-    // Opening successful process. 
-    db = event.target.result;
-
-    writingObjectStore(dummyData);
-    readingObjectStore();
-    };
-
-    connection.onerror = (event) => {
-    // We handle the opening db error. 
-    console.error('error:', event.target.errorCode);
-    };
-
-    function writingObjectStore(dummyData) {
-        // it can be readonly or readwrite
-        var transaction = db.transaction(['notes'], 'readwrite');
-
-        // Adding the data in the objectStore
-        let objectStore = transaction.objectStore("notes");
-        dummyData.forEach(
-            (note) => {
-            let request = objectStore.add(note);
-
-            request.onerror = (e) => {
-            };
-            request.onsuccess = (e) => {
-                console.log('Item added to indexedDB');
-            };
-            }
-        );
-    }
-
-    function readingObjectStore() {
-        let transaction = db.transaction(["notes"], "readonly");
-        // Adding the data in the objectStore 
-        let objectStore = transaction.objectStore('notes') ;
-        let request = objectStore.getAll();
-        request.onsuccess = () => {
-            request.result.forEach((item) => console.log('Items by name:', item));
-            };
-    }
-
-    function deletingFromTheObjectStore() {
-        // Deleting a registry 
-        let request = db.transaction(["notes"], "readwrite")
-                        .objectStore("notes")
-                        .delete("title 1");
-        request.onsuccess = (event) => {
-            // it was successfully deleted.
-            console.log('registry deleted');
-        };
-    }
-   
-    })();
-    </script>
+    <script src="./app.js"></script>
 </body>
 </html>
