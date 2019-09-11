@@ -1,16 +1,19 @@
+importScripts("/indexedDB.js");
+
 self.addEventListener('sync', (event) => {
   var url = 'https://jsonplaceholder.typicode.com';
  
   if(event.tags === 'message-queue') {
     event.waitUntil(() => {
         return
-          getAllMessagesFrom("message-queue")
+          getAllMessagesFromQueue("message-queue")
           .then((messages) => {
             return
               Promise.all(
                 messages.map(
                   (message) => {
-                    return fetch(`${url}/posts`,{
+                    return fetch(`${url}/posts`,
+                    {
                       method: 'post',
                       body: JSON.stringify({
                         title: message.title,
@@ -20,10 +23,11 @@ self.addEventListener('sync', (event) => {
                       headers: {
                         "Content-type": "application/json; charset=UTF-8"
                       }
-                      })
-                      .then(() => {
-                        return deleteMessageFromQueue(item);
-                      });
+                    }
+                    )
+                    .then(() => {
+                      return deleteMessageFromQueue(item);
+                    });
                     ;
                   }
                 );
@@ -31,6 +35,6 @@ self.addEventListener('sync', (event) => {
             ;
           });
         ;
-      });
+    });
   }
 });

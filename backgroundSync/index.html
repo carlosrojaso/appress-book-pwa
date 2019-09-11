@@ -9,22 +9,24 @@
 <body>
     <h1>Background Sync Demo</h1>
     <p>Open Chrome Dev Tools</p>
+    <button id="myButton">Send Message</button>
     <script>
-    if ('serviceWorker' in navigator) {
-    // Register a service worker hosted at the root of the
-    // site using a more restrictive scope.
-    navigator.serviceWorker.register('/sw.js', {scope: './'}).then(
-        (registration) => {
-            console.log('Service worker registration succeeded:', registration);
-        },
-        (error) => {
-        console.log('Service worker registration failed:', error);
+        if ('serviceWorker' in navigator) {
+        // Register a service worker hosted at the root of the
+        // site using a more restrictive scope.
+        navigator.serviceWorker.register('/sw.js', {scope: './'}).then(
+            (registration) => {
+                console.log('Service worker registration succeeded:', registration);
+            },
+            (error) => {
+            console.log('Service worker registration failed:', error);
+            }
+        );
+        } else {
+            console.log('Service workers are not supported.');
         }
-    );
-    } else {
-        console.log('Service workers are not supported.');
-    }
     </script>
+    <script src="./indexedDB.js"></script>
     <script src="./app.js"></script>
 </body>
 </html>
