@@ -7,16 +7,20 @@ self.addEventListener('install', function(event) {
 
 self.addEventListener('sync', function(event) {
   const url = 'https://jsonplaceholder.typicode.com';
+
+  console.log('I am in sync', event.tag);
  
-  if(event.tags === 'message-queue') {
+  if(event.tag === 'message-queue') {
     event.waitUntil(function() {
       return
       getAllMessagesFromQueue()
           .then((messages) => {
+            console.log('messages', messages);
             return
               Promise.all(
                 messages.map(
                   (message) => {
+                    console.log('a message', message);
                     return 
                       fetch(`${url}/posts`,
                       {
@@ -31,7 +35,8 @@ self.addEventListener('sync', function(event) {
                         }
                       }
                       )
-                      .then(() => {
+                      .then((response) => {
+                        console.log('response>>>', response);
                         return deleteMessageFromQueue(item);
                       });
                     ;
