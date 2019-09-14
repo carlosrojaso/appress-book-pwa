@@ -64,6 +64,7 @@ function getAllMessagesFromQueue() {
 }
 
 function deleteMessageFromQueue(item) {
+    console.log('deleteMessageFromQueue()');
     return new Promise(
         (resolve, reject) => {
             // Deleting a registry 
@@ -72,6 +73,7 @@ function deleteMessageFromQueue(item) {
             .delete(item.title);
             request.onsuccess = () => {
                 // it was successfully deleted.
+                console.log('message deleted', item);
                 resolve(request.result);
             };
             request.onerror = () => {
