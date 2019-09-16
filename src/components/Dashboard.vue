@@ -36,6 +36,7 @@ import {fireApp} from'../firebase.js'
 import Notes from './Notes.vue'
 
 const db = fireApp.database().ref();
+const auth = fireApp.auth();
 
 export default {
   name: 'Dashboard',
@@ -50,6 +51,7 @@ export default {
     dialog: false
   }),
   mounted() {
+    this.isUserLoggedIn();
     db.once('value', (notes) => {
       notes.forEach((note) => {
         this.pages.push({
@@ -87,6 +89,19 @@ export default {
     resetForm () {
       this.newTitle = '';
       this.newContent = '';
+    },
+    isUserLoggedIn(){
+      auth.onAuthStateChanged(function(user) {
+        if (user) {
+          // User is signed in.
+          const uid = user.uid;
+          // eslint-disable-next-line
+          console.log('user id:', uid);
+        } else {
+          // No user is signed in.
+          this.$router.push('/login');
+        }
+      });
     }
   }
 }
