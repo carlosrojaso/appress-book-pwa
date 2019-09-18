@@ -63,6 +63,7 @@
       actionText: 'Login',
       actionButton: 'Send',
       email: '',
+      user: null,
       show1: false,
       password: 'Password',
       rules: {
@@ -74,7 +75,9 @@
 
     mounted () {
       this.isUserLoggedIn()
-      .then(()=> { this.goToDashboard(); });
+      .then(()=> { this.goToDashboard(); })
+      .catch(()=> {})
+      ;
     },
 
     computed: {
@@ -96,12 +99,13 @@
           (resolve, reject) => {
             auth.onAuthStateChanged(function(user) {
               if (user) {
+                this.user = user;
                 // eslint-disable-next-line
-                const uid = user.uid;
-                resolve(true);
+                console.log('user>>>', this.user);
+                resolve(user);
               }
               else {
-                reject(true);
+                reject(user);
               }
             })
           }
