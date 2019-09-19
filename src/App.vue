@@ -27,41 +27,25 @@
 </template>
 
 <script>
-import {fireApp} from'./firebase.js'
+import { fireApp } from './firebase';
+
 const auth = fireApp.auth();
 
 export default {
   name: 'app',
   data: () => ({
-    user: null,
     logged: false,
   }),
   mounted() {
-    this.isUserLoggedIn()
-    .then((user)=>{
-      this.user = user;
-      this.logged = true;
-    });
+    this.$root.$on('USER_LOGGED', (payload)=>{ this.logged = payload });
   }, 
   methods: {
-    isUserLoggedIn () {
-        return new Promise(
-          (resolve, reject) => {
-            auth.onAuthStateChanged(function(user) {
-              if (user) {
-                resolve(user);
-              }
-              else {
-                reject(user);
-              }
-            })
-          }
-        )
-        ;
-    },
     loggedOut () {
       auth.signOut()
-      .then(()=>{this.$router.push('/login')})
+      .then(()=>{
+        this.$router.push('/login');
+        this.logged= false;
+        })
       .catch((error)=> {
         // eslint-disable-next-line 
         console.log('error', error)

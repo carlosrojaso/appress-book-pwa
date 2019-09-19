@@ -45,9 +45,9 @@
 </template>
 
 <script>
-  import { validationMixin } from 'vuelidate'
-  import { required, email } from 'vuelidate/lib/validators'
-  import {fireApp} from'../firebase.js'
+  import { validationMixin } from 'vuelidate';
+  import { required, email } from 'vuelidate/lib/validators';
+  import { fireApp } from '../firebase';
 
   const auth = fireApp.auth();
 
@@ -75,7 +75,10 @@
 
     mounted () {
       this.isUserLoggedIn()
-      .then(()=> { this.goToDashboard(); })
+      .then(()=> { 
+        this.goToDashboard();
+        this.$root.$emit('USER_LOGGED',true); 
+      })
       .catch(()=> {})
       ;
     },
@@ -100,8 +103,6 @@
             auth.onAuthStateChanged(function(user) {
               if (user) {
                 this.user = user;
-                // eslint-disable-next-line
-                console.log('user>>>', this.user);
                 resolve(user);
               }
               else {
@@ -131,9 +132,7 @@
       signInUser (email, password) {
         auth.signInWithEmailAndPassword(email,password)
         .then(
-          (user) => {
-          // eslint-disable-next-line
-          console.log('User Logged in.', user);
+          () => {
           this.goToDashboard();
           }
         )
