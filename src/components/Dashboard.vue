@@ -36,6 +36,7 @@ import {fireApp} from'../firebase.js'
 import Notes from './Notes.vue'
 
 const db = fireApp.database().ref();
+const auth = fireApp.auth();
 
 export default {
   name: 'Dashboard',
@@ -43,22 +44,29 @@ export default {
     Notes
   },
   data: () => ({
+    user: null,
     pages:[],
     newTitle: '',
     newContent: '',
     index: 0,
     dialog: false
   }),
+  computed: {
+  },
   mounted() {
-    db.once('value', (notes) => {
-      notes.forEach((note) => {
-        this.pages.push({
-          title: note.child('title').val(),
-          content: note.child('content').val(),
-          ref: note.ref
-        })
-      })
-    })
+    this.isUserLoggedIn()
+    .then(
+      (user) => {
+        this.user = user;
+        this.getUserNotes();
+      }
+    )
+    .catch(
+      () => {
+        this.$router.push('/login');
+      }
+    )
+    ;
   },
   methods:  {
     newNote () {
@@ -67,8 +75,11 @@ export default {
     saveNote () {
       const newItem = {
         title: this.newTitle,
-        content: this.newContent
+        content: this.newContent,
+        userId: this.user.uid
       };
+      // eslint-disable-next-line
+      console.log('user id:', this.user.uid);
       this.pages.push(newItem);
       this.index = this.pages.length - 1;
       db.push(newItem);
@@ -77,6 +88,19 @@ export default {
     },
     closeModal () {
       this.dialog = false;
+    },
+    getUserNotes () {
+      db.orderByChild('userId').equalTo(this.user.uid).once("value").then(
+        (notes) => {
+          notes.forEach((note) => {
+            this.pages.push({
+              title: note.child('title').val(),
+              content: note.child('content').val(),
+              ref: note.ref
+            })
+          })
+        }
+      );
     },
     deleteNote (item) {
       let noteRef = this.pages[item].ref;
@@ -87,7 +111,22 @@ export default {
     resetForm () {
       this.newTitle = '';
       this.newContent = '';
-    }
+    },
+    isUserLoggedIn () {
+        return new Promise(
+          (resolve, reject) => {
+            auth.onAuthStateChanged(function(user) {
+              if (user) {
+                resolve(user);
+              }
+              else {
+                reject(user);
+              }
+            })
+          }
+        )
+        ;
+    },
   }
 }
 </script>
