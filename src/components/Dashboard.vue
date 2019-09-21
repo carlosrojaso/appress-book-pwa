@@ -58,6 +58,7 @@ export default {
     .then(
       (user) => {
         this.user = user;
+        this.$root.$emit('USER_LOGGED',true);
         this.getUserNotes();
       }
     )
@@ -78,8 +79,6 @@ export default {
         content: this.newContent,
         userId: this.user.uid
       };
-      // eslint-disable-next-line
-      console.log('user id:', this.user.uid);
       this.pages.push(newItem);
       this.index = this.pages.length - 1;
       db.push(newItem);
@@ -90,7 +89,8 @@ export default {
       this.dialog = false;
     },
     getUserNotes () {
-      db.orderByChild('userId').equalTo(this.user.uid).once("value").then(
+      db.orderByChild('userId').equalTo(this.user.uid).once("value")
+      .then(
         (notes) => {
           notes.forEach((note) => {
             this.pages.push({
@@ -100,7 +100,14 @@ export default {
             })
           })
         }
-      );
+      )
+      .catch(
+        (error) => {
+          // eslint-disable-next-line
+          console.log('something wrong happened!', error);
+        }
+      )
+      ;
     },
     deleteNote (item) {
       let noteRef = this.pages[item].ref;
