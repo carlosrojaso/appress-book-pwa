@@ -65,15 +65,6 @@ export default {
       this.dialog = true;
     },
     saveNote () {
-      if( 'serviceWorker' in navigator && 'SyncManager' in window ){
-        navigator
-        .serviceWorker
-        .ready
-        .then(function(registration){
-          registration.sync.register("new-item");
-        });
-      }
-
       const newItem = {
         title: this.newTitle,
         content: this.newContent
@@ -81,8 +72,35 @@ export default {
       this.pages.push(newItem);
       this.index = this.pages.length - 1;
       db.push(newItem);
+      this.addtoAPINote(newItem);
       this.resetForm();
       this.closeModal();
+    },
+    addtoAPINote(note) {
+      const url = 'https://jsonplaceholder.typicode.com';
+       fetch(`${url}/posts`,
+          {
+            method: 'post',
+            body: JSON.stringify({
+              title: note.title,
+              body: note.body,
+              userId: 1
+            }),
+            headers: {
+              "Content-type": "application/json; charset=UTF-8"
+            }
+          }
+      ).then(
+        (response) => {
+          // eslint-disable-next-line
+          console.log('fetch call:', response);
+        }
+      ).catch(
+        () => {
+          // eslint-disable-next-line
+          console.log('Error sending to API...');
+        }
+      );
     },
     closeModal () {
       this.dialog = false;
