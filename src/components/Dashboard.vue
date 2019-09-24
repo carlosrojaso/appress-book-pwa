@@ -77,10 +77,9 @@ export default {
       this.closeModal();
     },
     addtoAPINote(note) {
-      const url = 'https://jsonplaceholder.typicode.com';
-       fetch(`${url}/posts`,
+       fetch('https://jsonplaceholder.typicode.com/posts',
           {
-            method: 'post',
+            method: 'POST',
             body: JSON.stringify({
               title: note.title,
               body: note.body,
