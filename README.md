@@ -49,26 +49,27 @@ You can get the book [here](https://www.apress.com/us/book/9781484253335)
 - Creating Our Service Worker                                                                          
 - Summary
 
+### Chapter 1: Examples
 
-#### Getting Started
+#### 1.0.1 Getting Started
 
 ```
 $git checkout v1.0.1
 ```
 
-#### Vuetify Ready
+#### 1.0.2 Vuetify Ready
 
 ```
 $git checkout v1.0.2
 ```
 
-#### Web Manifest Ready
+#### 1.0.3 Web Manifest Ready
 
 ```
 $git checkout v1.0.3
 ```
 
-#### Service Worker Ready
+#### 1.0.4 Service Worker Ready
 
 ```
 $git checkout v1.0.4
