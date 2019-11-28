@@ -47,7 +47,33 @@ You can get the book [here](https://www.apress.com/us/book/9781484253335)
 - Our App                                                                                                                
 - Building Our Manifest                                                                                     
 - Creating Our Service Worker                                                                          
-- Summary                                                                                                             
+- Summary
+
+
+#### Getting Started
+
+```
+$git checkout v1.0.1
+```
+
+#### Vuetify Ready
+
+```
+$git checkout v1.0.2
+```
+
+#### Web Manifest Ready
+
+```
+$git checkout v1.0.3
+```
+
+#### Service Worker Ready
+
+```
+$git checkout v1.0.4
+```
+
 
 ### Chapter 2: Web App Manifest                                                              
 - Creating Our Manifest                                                                                          
