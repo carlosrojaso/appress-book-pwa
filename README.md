@@ -91,7 +91,13 @@ $git checkout v1.0.4
 - The Final Manifest                                                                                               
 - Linking Our Manifest in Our App                                                                          
 - Debugging Our Web App Manifest                                                                       
-- Summary                                                                                                             
+- Summary
+
+#### 1.0.5 Web Manifest added in Main Entry.
+
+```
+$git checkout v1.0.5
+```
 
 ### Chapter 3: Service Workers                                                                 
 - What Is a Service Worker?                                                                                   
